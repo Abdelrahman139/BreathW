@@ -21,11 +21,13 @@ import { AboutPage } from './pages/public/AboutPage';
 
 import { ProfilePage } from './pages/account/ProfilePage';
 import { SettingsPage } from './pages/account/SettingsPage';
+import { ScrollToTop } from './components/ScrollToTop';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop />
         <Routes>
           {/* Public Routes inside PublicLayout (Navbar + Footer) */}
           <Route element={<PublicLayout />}>
