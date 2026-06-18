@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useAuth } from '../hooks/useAuth';
-import axiosInstance from '../api/axios';
+import { useAuth } from '../../hooks/useAuth';
+import axiosInstance from '../../api/axios';
 import { User, Mail, Save, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 export const ProfilePage: React.FC = () => {

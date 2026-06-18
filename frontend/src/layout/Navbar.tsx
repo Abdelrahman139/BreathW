@@ -8,7 +8,11 @@ export const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme ? savedTheme === 'dark' : true;
+  });
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -17,10 +21,28 @@ export const Navbar: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    
+    if (dropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownOpen]);
+
+  useEffect(() => {
     if (darkMode) {
       document.documentElement.classList.remove('light');
+      localStorage.setItem('theme', 'dark');
     } else {
       document.documentElement.classList.add('light');
+      localStorage.setItem('theme', 'light');
     }
   }, [darkMode]);
 
@@ -32,7 +54,7 @@ export const Navbar: React.FC = () => {
   ];
 
   if (isAuthenticated) {
-    navLinks.push({ name: 'Dashboard', path: '/app' });
+    navLinks.push({ name: 'Dashboard', path: '/dashboard' });
   }
 
   return (
@@ -90,10 +112,9 @@ export const Navbar: React.FC = () => {
             </button>
 
             {isAuthenticated ? (
-              <div className="relative">
+              <div className="relative" ref={dropdownRef}>
                 <button 
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  onBlur={() => setTimeout(() => setDropdownOpen(false), 200)}
                   className="flex items-center space-x-3 ml-2 border-l border-slate-700 pl-4 hover:opacity-80 transition-opacity focus:outline-none"
                 >
                   <div className="flex flex-col items-end">
@@ -113,14 +134,24 @@ export const Navbar: React.FC = () => {
                     </div>
                     
                     <Link 
-                      to="/app/profile" 
+                      to="/dashboard"
+                      onClick={() => setDropdownOpen(false)}
+                      className="flex items-center px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+                    >
+                      <Activity className="w-4 h-4 mr-3 text-slate-400" />
+                      Dashboard
+                    </Link>
+                    <Link 
+                      to="/profile" 
+                      onClick={() => setDropdownOpen(false)}
                       className="flex items-center px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
                     >
                       <User className="w-4 h-4 mr-3 text-slate-400" />
                       Profile Data
                     </Link>
                     <Link 
-                      to="/app/settings" 
+                      to="/settings" 
+                      onClick={() => setDropdownOpen(false)}
                       className="flex items-center px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
                     >
                       <Settings className="w-4 h-4 mr-3 text-slate-400" />
@@ -129,7 +160,10 @@ export const Navbar: React.FC = () => {
                     
                     <div className="border-t border-slate-800 mt-1 pt-1">
                       <button 
-                        onClick={() => logout()}
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          logout();
+                        }}
                         className="flex items-center w-full px-4 py-2.5 text-sm text-red-400 hover:bg-slate-800/50 hover:text-red-300 transition-colors"
                       >
                         <LogOut className="w-4 h-4 mr-3 text-red-400/80" />
@@ -198,7 +232,7 @@ export const Navbar: React.FC = () => {
             {isAuthenticated ? (
               <>
                 <Link
-                  to="/app/profile"
+                  to="/profile"
                   onClick={() => setMobileOpen(false)}
                   className="block w-full text-center px-4 py-3 text-slate-300 hover:text-white border border-slate-700 hover:border-slate-600 rounded-xl text-sm font-medium transition-colors"
                 >

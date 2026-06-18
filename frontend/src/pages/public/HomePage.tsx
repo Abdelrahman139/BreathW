@@ -136,7 +136,7 @@ export const HomePage: React.FC = () => {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up-delay-2">
             <Link
-              to={isAuthenticated ? '/app' : '/register'}
+              to={isAuthenticated ? '/dashboard' : '/register'}
               className="group flex items-center space-x-2 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-2xl transition-all duration-300 shadow-xl shadow-blue-600/20 hover:shadow-blue-500/30 hover:-translate-y-0.5"
             >
               <span>{isAuthenticated ? 'Upload New Scan' : 'Get Started Free'}</span>

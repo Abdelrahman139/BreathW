@@ -26,13 +26,20 @@ namespace XRayAPI.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var role = User.FindFirst(ClaimTypes.Role)?.Value;
 
+
+
+            int totalPatients = 0;
+            int totalScans = 0;
+
             if (role == "Patient")
             {
-                return Ok(new { }); // Patients have personal dashboard handled mostly in frontend
+                totalScans = await _context.Scans.CountAsync(s => s.PatientId.ToString() == userId);
             }
-
-            var totalPatients = await _context.Patients.CountAsync(p => p.DoctorId.ToString() == userId);
-            var totalScans = await _context.Scans.CountAsync(s => s.Patient.DoctorId.ToString() == userId);
+            else
+            {
+                totalPatients = await _context.Patients.CountAsync(p => p.DoctorId.ToString() == userId);
+                totalScans = await _context.Scans.CountAsync(s => s.Patient.DoctorId.ToString() == userId);
+            }
 
             // Mocked stats for simplicity matching frontend DashboardStats interface
             return Ok(new {

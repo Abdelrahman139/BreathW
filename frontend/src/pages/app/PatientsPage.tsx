@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Plus, Eye, Activity, X } from 'lucide-react';
-import axiosInstance from '../api/axios';
-import { PatientForm } from '../components/PatientForm';
-import type { PatientFormData } from '../components/PatientForm';
-import type { Patient } from '../types';
+import axiosInstance from '../../api/axios';
+import { PatientForm } from '../../components/PatientForm';
+import type { PatientFormData } from '../../components/PatientForm';
+import type { Patient } from '../../types';
 
 export const PatientsPage: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);

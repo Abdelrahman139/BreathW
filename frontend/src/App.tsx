@@ -2,25 +2,25 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import { AuthProvider } from './auth/AuthContext';
-import { AppLayout } from './layout/AppLayout';
 import { PublicLayout } from './layout/PublicLayout';
 import { ProtectedNavbarLayout } from './layout/ProtectedNavbarLayout';
 
 import { LoginPage } from './auth/LoginPage';
 import { RegisterPage } from './auth/RegisterPage';
-import { DashboardPage } from './pages/DashboardPage';
-import { PatientsPage } from './pages/PatientsPage';
-import { PatientDetailPage } from './pages/PatientDetailPage';
-import { NewScanPage } from './pages/NewScanPage';
-import { ScanResultPage } from './pages/ScanResultPage';
+
+import { DashboardPage } from './pages/app/DashboardPage';
+import { PatientsPage } from './pages/app/PatientsPage';
+import { PatientDetailPage } from './pages/app/PatientDetailPage';
+import { NewScanPage } from './pages/app/NewScanPage';
+import { ScanResultPage } from './pages/app/ScanResultPage';
 
 import { HomePage } from './pages/public/HomePage';
 import { DiseasesPage } from './pages/public/DiseasesPage';
 import { HealthTipsPage } from './pages/public/HealthTipsPage';
 import { AboutPage } from './pages/public/AboutPage';
 
-import { ProfilePage } from './pages/ProfilePage';
-import { SettingsPage } from './pages/SettingsPage';
+import { ProfilePage } from './pages/account/ProfilePage';
+import { SettingsPage } from './pages/account/SettingsPage';
 
 function App() {
   return (
@@ -37,19 +37,15 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
           </Route>
 
-          {/* Protected Routes without Sidebar (Navbar + Footer only) */}
+          {/* Protected Routes (Navbar + Footer only, no Sidebar) */}
           <Route element={<ProtectedNavbarLayout />}>
-            <Route path="/app/profile" element={<ProfilePage />} />
-            <Route path="/app/settings" element={<SettingsPage />} />
-          </Route>
-
-          {/* Protected Routes inside AppLayout (Sidebar + Dashboard) */}
-          <Route element={<AppLayout />}>
-            <Route path="/app" element={<DashboardPage />} />
-            <Route path="/app/patients" element={<PatientsPage />} />
-            <Route path="/app/patients/:id" element={<PatientDetailPage />} />
-            <Route path="/app/patients/:id/new-scan" element={<NewScanPage />} />
-            <Route path="/app/scans/:id" element={<ScanResultPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/patients" element={<PatientsPage />} />
+            <Route path="/patients/:id" element={<PatientDetailPage />} />
+            <Route path="/patients/:id/new-scan" element={<NewScanPage />} />
+            <Route path="/scans/:id" element={<ScanResultPage />} />
           </Route>
 
           {/* Catch-all redirects to Home */}

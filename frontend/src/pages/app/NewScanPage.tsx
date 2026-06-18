@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, User } from 'lucide-react';
-import axiosInstance from '../api/axios';
-import { UploadZone } from '../components/UploadZone';
-import type { Patient } from '../types';
-import { useAuth } from '../hooks/useAuth';
+import axiosInstance from '../../api/axios';
+import { UploadZone } from '../../components/UploadZone';
+import type { Patient } from '../../types';
+import { useAuth } from '../../hooks/useAuth';
 
 export const NewScanPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { User as UserIcon, Calendar, Activity, FileImage, Plus, ArrowLeft, Loader2 } from 'lucide-react';
-import axiosInstance from '../api/axios';
-import type { Patient, Scan } from '../types';
-import { ConditionBadge } from '../components/ConditionBadge';
-import { useAuth } from '../hooks/useAuth';
+import axiosInstance from '../../api/axios';
+import type { Patient, Scan } from '../../types';
+import { ConditionBadge } from '../../components/ConditionBadge';
+import { useAuth } from '../../hooks/useAuth';
 
 interface PatientDetailData extends Patient {
   scans: Scan[];

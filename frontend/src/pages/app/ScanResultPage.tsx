@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Download, FileText, Loader2, Save } from 'lucide-react';
-import axiosInstance from '../api/axios';
-import { HeatmapViewer } from '../components/HeatmapViewer';
-import { ResultCard } from '../components/ResultCard';
-import type { Scan } from '../types';
-import { useAuth } from '../hooks/useAuth';
+import axiosInstance from '../../api/axios';
+import { HeatmapViewer } from '../../components/HeatmapViewer';
+import { ResultCard } from '../../components/ResultCard';
+import type { Scan } from '../../types';
+import { useAuth } from '../../hooks/useAuth';
 
 export const ScanResultPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();

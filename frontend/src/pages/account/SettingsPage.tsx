@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Bell, Shield, Key, AlertCircle, CheckCircle2 } from 'lucide-react';
-import axiosInstance from '../api/axios';
+import axiosInstance from '../../api/axios';
 
 export const SettingsPage: React.FC = () => {
   const [notifications, setNotifications] = useState(true);
