@@ -1,0 +1,35 @@
+# Node modules
+node_modules/
+dist/
+build/
+
+# .NET
+bin/
+obj/
+.vs/
+*.user
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.env
+.venv/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Application Data
+resized_dataset/
+uploads/
+Scans/
+backend/XRayAPI/Scans/
+backend/XRayAPI/Heatmaps/
+backend/XRayAPI/app.db
+
+# Scratch files
+convert.py

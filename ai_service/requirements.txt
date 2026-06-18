@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+torch
+torchvision
+grad-cam
+Pillow
+scikit-learn
+numpy
+python-multipart

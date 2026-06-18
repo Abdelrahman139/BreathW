@@ -1,0 +1,6 @@
+@XRayAPI_HostAddress = http://localhost:5202
+
+GET {{XRayAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
