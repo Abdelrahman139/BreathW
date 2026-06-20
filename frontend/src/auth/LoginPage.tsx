@@ -14,16 +14,14 @@ export const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
     setIsLoading(true);
-
     try {
       const response = await axiosInstance.post('/api/auth/login', { email, password });
       const { token, user } = response.data;
       login(token, user);
-      navigate('/', { replace: true });
+      navigate('/');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Invalid email or password. Please try again.');
+      toast.error(err.response?.data?.message || 'Invalid credentials');
     } finally {
       setIsLoading(false);
     }
@@ -52,13 +50,6 @@ export const LoginPage: React.FC = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div className="glass-panel py-8 px-4 shadow sm:rounded-2xl sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 flex items-start space-x-3">
-                <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-                <span className="text-sm text-red-400">{error}</span>
-              </div>
-            )}
-
             <div>
               <label className="block text-sm font-medium text-slate-300">Email address</label>
               <div className="mt-1 relative">

@@ -23,6 +23,8 @@ interface RecentScan {
   topScore: number;
 }
 
+import { Skeleton } from '../../components/ui/Skeleton';
+
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -49,8 +51,29 @@ export const DashboardPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
+      <div className="space-y-8 animate-fade-in">
+        <div>
+          <Skeleton className="h-8 w-64 mb-2" />
+          <Skeleton className="h-4 w-96" />
+        </div>
+        
+        <Skeleton className="h-64 w-full rounded-2xl" />
+
+        {user?.role !== 'Patient' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+          </div>
+        )}
+
+        <div className={`grid grid-cols-1 gap-8 ${user?.role !== 'Patient' ? 'lg:grid-cols-3' : ''}`}>
+          {user?.role !== 'Patient' && (
+            <Skeleton className="lg:col-span-2 h-[400px] rounded-2xl" />
+          )}
+          <Skeleton className="h-[400px] rounded-2xl" />
+        </div>
       </div>
     );
   }

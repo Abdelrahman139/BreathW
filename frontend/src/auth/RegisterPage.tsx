@@ -3,20 +3,19 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Activity, Lock, Mail, User, Loader2, AlertCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import axiosInstance from '../api/axios';
+import toast from 'react-hot-toast';
 
 export const RegisterPage: React.FC = () => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<'Doctor' | 'Patient'>('Patient');
-  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
     setIsLoading(true);
 
     try {
@@ -25,7 +24,7 @@ export const RegisterPage: React.FC = () => {
       login(token, user);
       navigate('/', { replace: true });
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      toast.error(err.response?.data?.message || 'Registration failed.');
     } finally {
       setIsLoading(false);
     }
@@ -54,12 +53,6 @@ export const RegisterPage: React.FC = () => {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <div className="glass-panel py-8 px-4 shadow sm:rounded-2xl sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3 flex items-start space-x-3">
-                <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-                <span className="text-sm text-red-400">{error}</span>
-              </div>
-            )}
 
             <div>
               <label className="block text-sm font-medium text-slate-300 mb-2">I am registering as a:</label>

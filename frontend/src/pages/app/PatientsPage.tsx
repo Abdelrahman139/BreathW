@@ -6,6 +6,8 @@ import { PatientForm } from '../../components/PatientForm';
 import type { PatientFormData } from '../../components/PatientForm';
 import type { Patient } from '../../types';
 
+import { Skeleton } from '../../components/ui/Skeleton';
+
 export const PatientsPage: React.FC = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [search, setSearch] = useState('');
@@ -13,16 +15,19 @@ export const PatientsPage: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchPatients = async () => {
+    setIsLoading(true);
     try {
       const response = await axiosInstance.get(`/api/patients?search=${search}&page=${page}`);
-      // Fallback structure in case API isn't perfectly matched yet
       setPatients(response.data.patients || response.data || []);
       setTotalPages(response.data.totalPages || 1);
     } catch (error) {
       console.error('Failed to fetch patients', error);
       setPatients([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -86,7 +91,16 @@ export const PatientsPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/50 bg-slate-900/20">
-              {patients.length === 0 ? (
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, index) => (
+                  <tr key={`skeleton-${index}`}>
+                    <td className="px-6 py-4 whitespace-nowrap"><Skeleton className="h-10 w-48" /></td>
+                    <td className="px-6 py-4 whitespace-nowrap"><Skeleton className="h-10 w-24" /></td>
+                    <td className="px-6 py-4 whitespace-nowrap"><Skeleton className="h-6 w-16" /></td>
+                    <td className="px-6 py-4 whitespace-nowrap"><Skeleton className="h-8 w-32" /></td>
+                  </tr>
+                ))
+              ) : patients.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-6 py-10 text-center text-slate-500">
                     No patients found. Create one to get started.

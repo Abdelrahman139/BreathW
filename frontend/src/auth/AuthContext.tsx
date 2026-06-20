@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import toast from 'react-hot-toast';
 import type { User } from '../types';
 
 interface AuthContextType {
@@ -38,6 +39,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('xray_user', JSON.stringify(newUser));
     setToken(newToken);
     setUser(newUser);
+    toast.success('Successfully logged in!');
   };
 
   const logout = () => {
@@ -45,6 +47,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.removeItem('xray_user');
     setToken(null);
     setUser(null);
+    toast.success('You have been logged out.');
   };
 
   return (

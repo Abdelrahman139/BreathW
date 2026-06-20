@@ -22,12 +22,36 @@ import { AboutPage } from './pages/public/AboutPage';
 import { ProfilePage } from './pages/account/ProfilePage';
 import { SettingsPage } from './pages/account/SettingsPage';
 import { ScrollToTop } from './components/ScrollToTop';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <ScrollToTop />
+        <Toaster 
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: '#1e293b',
+              color: '#f8fafc',
+              border: '1px solid #334155',
+            },
+            success: {
+              iconTheme: {
+                primary: '#3b82f6',
+                secondary: '#fff',
+              },
+            },
+            error: {
+              iconTheme: {
+                primary: '#ef4444',
+                secondary: '#fff',
+              },
+            },
+          }}
+        />
         <Routes>
           {/* Public Routes inside PublicLayout (Navbar + Footer) */}
           <Route element={<PublicLayout />}>

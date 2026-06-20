@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, User } from 'lucide-react';
+import toast from 'react-hot-toast';
 import axiosInstance from '../../api/axios';
 import { UploadZone } from '../../components/UploadZone';
 import type { Patient } from '../../types';
@@ -29,12 +30,18 @@ export const NewScanPage: React.FC = () => {
     formData.append('patientId', id!);
     formData.append('file', file);
 
-    const response = await axiosInstance.post('/api/scans', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    
-    // Redirect to the newly created scan result page
-    navigate(`/scans/${response.data.scanId}`);
+    try {
+      const response = await axiosInstance.post('/api/scans', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      
+      toast.success('Scan analyzed successfully');
+      // Redirect to the newly created scan result page
+      navigate(`/scans/${response.data.scanId}`);
+    } catch (error) {
+      toast.error('Failed to analyze scan');
+      console.error('Failed to upload scan', error);
+    }
   };
 
   return (

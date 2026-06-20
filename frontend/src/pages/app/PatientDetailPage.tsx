@@ -5,6 +5,7 @@ import axiosInstance from '../../api/axios';
 import type { Patient, Scan } from '../../types';
 import { ConditionBadge } from '../../components/ConditionBadge';
 import { useAuth } from '../../hooks/useAuth';
+import { Skeleton } from '../../components/ui/Skeleton';
 
 interface PatientDetailData extends Patient {
   scans: Scan[];
@@ -32,8 +33,31 @@ export const PatientDetailPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+      <div className="space-y-6 animate-fade-in">
+        <div>
+          <Skeleton className="h-6 w-32 mb-4" />
+          <div className="flex justify-between">
+            <Skeleton className="h-8 w-64" />
+            <Skeleton className="h-10 w-40" />
+          </div>
+        </div>
+
+        <div className="glass-panel p-6 rounded-2xl flex flex-col md:flex-row gap-6 items-start md:items-center">
+          <Skeleton className="w-16 h-16 rounded-full shrink-0" />
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-6 w-full">
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+        </div>
+
+        <div>
+          <Skeleton className="h-6 w-48 mb-4" />
+          <div className="space-y-4">
+            <Skeleton className="h-24 w-full rounded-xl" />
+            <Skeleton className="h-24 w-full rounded-xl" />
+          </div>
+        </div>
       </div>
     );
   }
