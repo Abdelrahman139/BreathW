@@ -173,7 +173,7 @@ export const DashboardPage: React.FC = () => {
         <div className="glass-panel p-6 rounded-2xl flex flex-col">
           <h2 className="text-lg font-semibold text-slate-100 mb-6 flex justify-between items-center">
             Recent Scans
-            <Link to="/patients" className="text-sm text-blue-400 hover:text-blue-300 font-medium transition-colors">
+            <Link to={user?.role === 'Patient' ? `/patients/${user?.id}` : "/patients"} className="text-sm text-blue-400 hover:text-blue-300 font-medium transition-colors">
               View All
             </Link>
           </h2>

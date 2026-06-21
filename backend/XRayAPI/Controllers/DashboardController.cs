@@ -59,8 +59,55 @@ namespace XRayAPI.Controllers
         [HttpGet("recent-scans")]
         public async Task<IActionResult> GetRecentScans()
         {
-            // Just returning empty list for demo to let frontend load without crashing
-            return Ok(new object[] { });
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var role = User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var query = _context.Scans
+                .Include(s => s.Patient)
+                .Include(s => s.Result)
+                .AsQueryable();
+
+            if (role == "Patient")
+            {
+                query = query.Where(s => s.Patient.UserId.ToString() == userId);
+            }
+            else
+            {
+                query = query.Where(s => s.Patient.DoctorId.ToString() == userId);
+            }
+
+            var recentScansRaw = await query
+                .OrderByDescending(s => s.UploadedAt)
+                .Take(5)
+                .ToListAsync();
+
+            var recentScans = recentScansRaw.Select(s => 
+            {
+                var r = s.Result;
+                var conditions = new System.Collections.Generic.Dictionary<string, double>
+                {
+                    { "pneumonia", r.Pneumonia },
+                    { "effusion", r.Effusion },
+                    { "cardiomegaly", r.Cardiomegaly },
+                    { "pneumothorax", r.Pneumothorax },
+                    { "no_finding", r.NoFinding }
+                };
+                var top = conditions.OrderByDescending(kv => kv.Value).First();
+
+                return new
+                {
+                    id = s.Id,
+                    patientId = s.PatientId,
+                    patientName = s.Patient.FullName,
+                    date = s.UploadedAt,
+                    topCondition = top.Key,
+                    topScore = top.Value
+                };
+            }).ToList();
+
+            return Ok(recentScans);
         }
     }
 }

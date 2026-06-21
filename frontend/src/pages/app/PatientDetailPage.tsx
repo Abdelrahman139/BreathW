@@ -147,15 +147,17 @@ export const PatientDetailPage: React.FC = () => {
               // Assuming scan.result object is mapped correctly, we exclude non-disease keys
               const diseases = ['pneumonia', 'effusion', 'cardiomegaly', 'pneumothorax'];
               let topCondition = 'No Finding';
-              let topScore = scan.result.noFinding;
+              let topScore = scan.result?.noFinding || 0;
 
-              diseases.forEach(d => {
-                const score = (scan.result as any)[d];
-                if (score > topScore) {
-                  topScore = score;
-                  topCondition = d;
-                }
-              });
+              if (scan.result) {
+                diseases.forEach(d => {
+                  const score = (scan.result as any)[d];
+                  if (score > topScore) {
+                    topScore = score;
+                    topCondition = d;
+                  }
+                });
+              }
 
               return (
                 <div key={scan.id} className="glass-panel p-5 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-700 transition-colors">

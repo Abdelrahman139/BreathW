@@ -90,7 +90,7 @@ namespace XRayAPI.Controllers
                 var role = User.FindFirst(ClaimTypes.Role)?.Value;
                 var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                if (role == "Patient" && userIdStr == id.ToString())
+                if (role == "Patient" && !string.IsNullOrEmpty(userIdStr) && Guid.TryParse(userIdStr, out var parsedUserId) && parsedUserId == id)
                 {
                     var user = await _context.Users.FindAsync(id);
                     if (user != null)

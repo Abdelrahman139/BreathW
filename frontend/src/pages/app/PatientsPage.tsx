@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { Search, Plus, Eye, Activity, X } from 'lucide-react';
 import axiosInstance from '../../api/axios';
 import { PatientForm } from '../../components/PatientForm';
@@ -7,8 +7,15 @@ import type { PatientFormData } from '../../components/PatientForm';
 import type { Patient } from '../../types';
 
 import { Skeleton } from '../../components/ui/Skeleton';
+import { useAuth } from '../../hooks/useAuth';
 
 export const PatientsPage: React.FC = () => {
+  const { user } = useAuth();
+  
+  if (user?.role === 'Patient') {
+    return <Navigate to="/" replace />;
+  }
+
   const [patients, setPatients] = useState<Patient[]>([]);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
