@@ -74,7 +74,7 @@ export const Navbar: React.FC = () => {
               <Activity className="w-6 h-6 text-blue-400" />
             </div>
             <div>
-              <span className="text-xl font-bold text-slate-100 tracking-tight">PulmoAI</span>
+              <span className="text-xl font-bold text-slate-100 tracking-tight">BreathWise</span>
               <span className="hidden sm:inline text-[10px] ml-1.5 px-1.5 py-0.5 bg-blue-500/10 text-blue-400 rounded font-semibold uppercase tracking-wider">
                 Beta
               </span>

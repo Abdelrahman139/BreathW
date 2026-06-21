@@ -292,7 +292,7 @@ export const DiseasesPage: React.FC = () => {
             </span>
           </h1>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            PulmoAI can detect 5 pulmonary and cardiac conditions from chest X-rays.
+            BreathWise can detect 5 pulmonary and cardiac conditions from chest X-rays.
             Learn about each condition, its symptoms, and when to seek medical attention.
           </p>
         </div>
@@ -312,7 +312,7 @@ export const DiseasesPage: React.FC = () => {
             <h3 className="text-sm font-semibold text-amber-400 mb-2">⚠️ Important Disclaimer</h3>
             <p className="text-sm text-slate-400 leading-relaxed">
               The information provided on this page is for educational purposes only and should not be used as a
-              substitute for professional medical advice, diagnosis, or treatment. PulmoAI is an AI-assisted
+              substitute for professional medical advice, diagnosis, or treatment. BreathWise is an AI-assisted
               screening tool and its results should always be reviewed by a qualified healthcare professional.
               Always seek the advice of your physician with any questions you may have regarding a medical condition.
             </p>

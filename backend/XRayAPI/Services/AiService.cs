@@ -25,7 +25,11 @@ namespace XRayAPI.Services
                 var imageBytes = await File.ReadAllBytesAsync(imagePath);
                 form.Add(new ByteArrayContent(imageBytes), "file", Path.GetFileName(imagePath));
                 
-                var response = await _httpClient.PostAsync("http://localhost:8000/predict", form);
+                using var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:8000/predict");
+                request.Headers.Add("Authorization", "internal-key");
+                request.Content = form;
+                
+                var response = await _httpClient.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 
                 var json = await response.Content.ReadAsStringAsync();
@@ -48,7 +52,11 @@ namespace XRayAPI.Services
                 var imageBytes = await File.ReadAllBytesAsync(imagePath);
                 form.Add(new ByteArrayContent(imageBytes), "file", Path.GetFileName(imagePath));
                 
-                var response = await _httpClient.PostAsync("http://localhost:8000/heatmap", form);
+                using var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:8000/heatmap");
+                request.Headers.Add("Authorization", "internal-key");
+                request.Content = form;
+                
+                var response = await _httpClient.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 
                 var json = await response.Content.ReadAsStringAsync();
@@ -69,17 +77,15 @@ namespace XRayAPI.Services
             var random = new Random();
             double pneumonia = Math.Round(random.NextDouble() * 0.8, 4);
             double effusion = Math.Round(random.NextDouble() * (1 - pneumonia) * 0.5, 4);
-            double atelectasis = Math.Round(random.NextDouble() * (1 - pneumonia - effusion) * 0.4, 4);
-            double cardiomegaly = Math.Round(random.NextDouble() * (1 - pneumonia - effusion - atelectasis) * 0.3, 4);
-            double pneumothorax = Math.Round(random.NextDouble() * (1 - pneumonia - effusion - atelectasis - cardiomegaly) * 0.2, 4);
-            double noFinding = Math.Round(1.0 - (pneumonia + effusion + atelectasis + cardiomegaly + pneumothorax), 4);
+            double cardiomegaly = Math.Round(random.NextDouble() * (1 - pneumonia - effusion) * 0.3, 4);
+            double pneumothorax = Math.Round(random.NextDouble() * (1 - pneumonia - effusion - cardiomegaly) * 0.2, 4);
+            double noFinding = Math.Round(1.0 - (pneumonia + effusion + cardiomegaly + pneumothorax), 4);
             if (noFinding < 0) noFinding = 0;
 
             return new AiScoresDto
             {
                 Pneumonia = pneumonia,
                 Effusion = effusion,
-                Atelectasis = atelectasis,
                 Cardiomegaly = cardiomegaly,
                 Pneumothorax = pneumothorax,
                 NoFinding = noFinding

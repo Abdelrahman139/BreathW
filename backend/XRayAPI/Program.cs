@@ -49,6 +49,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddHttpClient<XRayAPI.Services.AiService>();
 builder.Services.AddScoped<XRayAPI.Services.AuthService>();
 builder.Services.AddScoped<XRayAPI.Services.FileStorageService>();
+builder.Services.AddScoped<XRayAPI.Services.PdfReportService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

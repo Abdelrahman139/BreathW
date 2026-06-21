@@ -21,7 +21,11 @@ export const ScanResultPage: React.FC = () => {
     const fetchScanData = async () => {
       try {
         const response = await axiosInstance.get(`/api/scans/${id}`);
-        setScan(response.data.scan);
+        const scanData = response.data.scan;
+        if (response.data.result && Object.keys(response.data.result).length > 0) {
+          scanData.result = response.data.result;
+        }
+        setScan(scanData);
         setPatientName(response.data.patientName || 'Patient');
         setNotes(response.data.scan.notes || '');
       } catch (error) {
@@ -84,7 +88,7 @@ export const ScanResultPage: React.FC = () => {
   }
 
   // Find top condition for HeatmapViewer
-  const diseases = ['pneumonia', 'effusion', 'atelectasis', 'cardiomegaly', 'pneumothorax'];
+  const diseases = ['pneumonia', 'effusion', 'cardiomegaly', 'pneumothorax'];
   let topCondition = 'No Finding';
   let topScore = scan.result.noFinding;
 

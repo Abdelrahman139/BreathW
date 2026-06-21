@@ -83,7 +83,28 @@ namespace XRayAPI.Controllers
             var patient = await _context.Patients
                 .Include(p => p.Scans)
                 .ThenInclude(s => s.Result)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id || p.UserId == id);
+
+            if (patient == null)
+            {
+                var role = User.FindFirst(ClaimTypes.Role)?.Value;
+                var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (role == "Patient" && userIdStr == id.ToString())
+                {
+                    var user = await _context.Users.FindAsync(id);
+                    if (user != null)
+                    {
+                        patient = new Patient
+                        {
+                            UserId = id,
+                            FullName = user.FullName
+                        };
+                        _context.Patients.Add(patient);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
 
             if (patient == null) return NotFound();
 
@@ -93,11 +114,11 @@ namespace XRayAPI.Controllers
                 FullName = patient.FullName,
                 DateOfBirth = patient.DateOfBirth,
                 Gender = patient.Gender,
-                Scans = patient.Scans.Select(s => new ScanSummaryDto {
+                Scans = patient.Scans?.Select(s => new ScanSummaryDto {
                     Id = s.Id,
                     ImageUrl = s.ImagePath,
                     UploadedAt = s.UploadedAt
-                }).ToList()
+                }).ToList() ?? new System.Collections.Generic.List<ScanSummaryDto>()
             };
 
             return Ok(dto);

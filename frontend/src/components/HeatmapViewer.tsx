@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Layers, Image as ImageIcon } from 'lucide-react';
+import { API_BASE_URL } from '../api/axios';
 
 interface HeatmapViewerProps {
   originalUrl: string;
@@ -10,7 +11,8 @@ interface HeatmapViewerProps {
 export const HeatmapViewer: React.FC<HeatmapViewerProps> = ({ originalUrl, heatmapBase64, topCondition }) => {
   const [viewMode, setViewMode] = useState<'side-by-side' | 'overlay' | 'original'>('side-by-side');
 
-  const heatmapSrc = `data:image/png;base64,${heatmapBase64}`;
+  const fullOriginalUrl = originalUrl.startsWith('http') ? originalUrl : `${API_BASE_URL}${originalUrl}`;
+  const heatmapSrc = heatmapBase64.startsWith('http') ? heatmapBase64 : `${API_BASE_URL}${heatmapBase64}`;
 
   return (
     <div className="glass-panel rounded-xl overflow-hidden flex flex-col w-full h-full">
@@ -58,7 +60,7 @@ export const HeatmapViewer: React.FC<HeatmapViewerProps> = ({ originalUrl, heatm
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full h-full">
             <div className="relative rounded-lg overflow-hidden border border-slate-800 h-full flex flex-col">
               <span className="absolute top-2 left-2 bg-black/60 text-xs px-2 py-1 rounded text-white z-10">Original</span>
-              <img src={originalUrl} alt="Original X-Ray" className="w-full h-full object-contain" />
+              <img src={fullOriginalUrl} alt="Original X-Ray" className="w-full h-full object-contain" />
             </div>
             <div className="relative rounded-lg overflow-hidden border border-slate-800 h-full flex flex-col">
               <span className="absolute top-2 left-2 bg-blue-500/80 text-xs px-2 py-1 rounded text-white z-10">Heatmap</span>
@@ -68,7 +70,7 @@ export const HeatmapViewer: React.FC<HeatmapViewerProps> = ({ originalUrl, heatm
         ) : (
           <div className="relative w-full h-full max-w-2xl mx-auto rounded-lg overflow-hidden border border-slate-800 flex items-center justify-center">
             <img 
-              src={viewMode === 'original' ? originalUrl : heatmapSrc} 
+              src={viewMode === 'original' ? fullOriginalUrl : heatmapSrc} 
               alt="Scan Viewer" 
               className="max-w-full max-h-[600px] object-contain transition-opacity duration-300"
             />

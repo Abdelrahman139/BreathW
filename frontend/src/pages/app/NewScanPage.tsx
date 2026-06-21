@@ -26,8 +26,12 @@ export const NewScanPage: React.FC = () => {
   }, [id]);
 
   const handleAnalyze = async (file: File) => {
+    if (!patient) {
+      toast.error('Patient data not loaded');
+      return;
+    }
     const formData = new FormData();
-    formData.append('patientId', id!);
+    formData.append('patientId', patient.id);
     formData.append('file', file);
 
     try {

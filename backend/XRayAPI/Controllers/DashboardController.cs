@@ -50,7 +50,6 @@ namespace XRayAPI.Controllers
                 conditionCounts = new[] {
                     new { name = "Pneumonia", count = 1 },
                     new { name = "Effusion", count = 0 },
-                    new { name = "Atelectasis", count = 0 },
                     new { name = "Cardiomegaly", count = 0 },
                     new { name = "Pneumothorax", count = 0 }
                 }

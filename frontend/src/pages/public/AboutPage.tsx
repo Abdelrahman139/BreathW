@@ -63,9 +63,9 @@ const TechCard: React.FC<{
 export const AboutPage: React.FC = () => {
   const faqs = [
     {
-      question: 'How accurate is PulmoAI?',
+      question: 'How accurate is BreathWise?',
       answer:
-        'PulmoAI uses a DenseNet121 model trained on the NIH Chest X-ray dataset. While it achieves strong performance in research settings, it is designed as a screening aid, not a replacement for professional radiological interpretation. All results should be reviewed by a qualified healthcare provider.',
+        'BreathWise uses a DenseNet121 model trained on the NIH Chest X-ray dataset. While it achieves strong performance in research settings, it is designed as a screening aid, not a replacement for professional radiological interpretation. All results should be reviewed by a qualified healthcare provider.',
     },
     {
       question: 'Is my medical data safe?',
@@ -73,14 +73,14 @@ export const AboutPage: React.FC = () => {
         'Yes. All uploaded images are processed securely and stored with encryption. Access is controlled through JWT-based authentication with role-based permissions. We never share patient data with third parties.',
     },
     {
-      question: 'Can patients use PulmoAI without a doctor?',
+      question: 'Can patients use BreathWise without a doctor?',
       answer:
         'Yes! Patients can register independently, upload their own chest X-rays, and view AI-generated analysis results. However, we strongly recommend sharing results with a healthcare provider for proper clinical interpretation.',
     },
     {
-      question: 'What conditions can PulmoAI detect?',
+      question: 'What conditions can BreathWise detect?',
       answer:
-        'PulmoAI can screen for 5 conditions: Pneumonia, Pleural Effusion, Atelectasis, Cardiomegaly, and Pneumothorax. It also indicates "No Finding" when no abnormalities are detected.',
+        'BreathWise can screen for 4 conditions: Pneumonia, Pleural Effusion, Cardiomegaly, and Pneumothorax. It also indicates "No Finding" when no abnormalities are detected.',
     },
     {
       question: 'What is Grad-CAM and how does it help?',
@@ -88,14 +88,14 @@ export const AboutPage: React.FC = () => {
         'Gradient-weighted Class Activation Mapping (Grad-CAM) is a visualization technique that highlights the areas of an X-ray image that were most influential in the AI\'s decision. This helps doctors understand why the AI flagged certain conditions and improves trust in the results.',
     },
     {
-      question: 'Is PulmoAI free to use?',
+      question: 'Is BreathWise free to use?',
       answer:
-        'PulmoAI offers free registration for individual practitioners and patients. We believe in making AI-assisted diagnostics accessible to everyone.',
+        'BreathWise offers free registration for individual practitioners and patients. We believe in making AI-assisted diagnostics accessible to everyone.',
     },
     {
       question: 'What image formats are supported?',
       answer:
-        'PulmoAI accepts standard medical image formats including PNG, JPEG, and DICOM. Images are automatically preprocessed to the required input size for the AI model.',
+        'BreathWise accepts standard medical image formats including PNG, JPEG, and DICOM. Images are automatically preprocessed to the required input size for the AI model.',
     },
   ];
 
@@ -115,7 +115,7 @@ export const AboutPage: React.FC = () => {
             </span>
           </h1>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            PulmoAI is built on the belief that advanced medical imaging analysis should be available
+            BreathWise is built on the belief that advanced medical imaging analysis should be available
             to every healthcare provider and patient, not just large hospitals with specialized radiologists.
           </p>
         </div>
@@ -134,7 +134,7 @@ export const AboutPage: React.FC = () => {
                   healthcare facilities lack the specialist radiologists needed for timely interpretation.
                 </p>
                 <p className="text-slate-400 leading-relaxed">
-                  PulmoAI provides an AI-powered second opinion that helps doctors triage patients faster,
+                  BreathWise provides an AI-powered second opinion that helps doctors triage patients faster,
                   empowers patients to be proactive about their health, and brings deep learning capabilities
                   to clinics of all sizes.
                 </p>
@@ -216,7 +216,7 @@ export const AboutPage: React.FC = () => {
               How Our <span className="text-blue-400">AI Works</span>
             </h2>
             <p className="text-slate-400 max-w-xl mx-auto">
-              A simplified explanation of the technology behind PulmoAI's chest X-ray analysis.
+              A simplified explanation of the technology behind BreathWise's chest X-ray analysis.
             </p>
           </div>
 
@@ -277,7 +277,7 @@ export const AboutPage: React.FC = () => {
           </h2>
           <p className="text-slate-400 mb-8">
             Whether you're a doctor seeking an AI second opinion or a patient monitoring your health,
-            PulmoAI is here for you.
+            BreathWise is here for you.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link

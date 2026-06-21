@@ -202,7 +202,7 @@ export const HomePage: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-slate-100 mb-4">
-              Why Choose <span className="text-blue-400">PulmoAI</span>?
+              Why Choose <span className="text-blue-400">BreathWise</span>?
             </h2>
             <p className="text-slate-400 max-w-2xl mx-auto">
               Our platform combines cutting-edge AI with clinical expertise to deliver fast,
@@ -368,7 +368,7 @@ export const HomePage: React.FC = () => {
             Ready to Transform Your Diagnostics?
           </h2>
           <p className="text-lg text-slate-400 mb-10">
-            Join PulmoAI today and experience the future of AI-assisted chest X-ray analysis.
+            Join BreathWise today and experience the future of AI-assisted chest X-ray analysis.
             Free for individual practitioners.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

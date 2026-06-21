@@ -87,7 +87,6 @@ export const DashboardPage: React.FC = () => {
     conditionCounts: [
       { name: 'Pneumonia', count: 0 },
       { name: 'Effusion', count: 0 },
-      { name: 'Atelectasis', count: 0 },
       { name: 'Cardiomegaly', count: 0 },
       { name: 'Pneumothorax', count: 0 },
     ]

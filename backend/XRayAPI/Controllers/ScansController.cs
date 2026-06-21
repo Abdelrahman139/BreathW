@@ -58,7 +58,6 @@ namespace XRayAPI.Controllers
                     ScanId = scan.Id,
                     Pneumonia = scores.Pneumonia,
                     Effusion = scores.Effusion,
-                    Atelectasis = scores.Atelectasis,
                     Cardiomegaly = scores.Cardiomegaly,
                     Pneumothorax = scores.Pneumothorax,
                     NoFinding = scores.NoFinding,
@@ -91,7 +90,6 @@ namespace XRayAPI.Controllers
                 Result = scan.Result != null ? new AiScoresDto {
                     Pneumonia = scan.Result.Pneumonia,
                     Effusion = scan.Result.Effusion,
-                    Atelectasis = scan.Result.Atelectasis,
                     Cardiomegaly = scan.Result.Cardiomegaly,
                     Pneumothorax = scan.Result.Pneumothorax,
                     NoFinding = scan.Result.NoFinding,
@@ -110,6 +108,29 @@ namespace XRayAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok(new { success = true });
+        }
+        [HttpGet("{id}/report")]
+        public async Task<IActionResult> DownloadReport(Guid id, [FromServices] PdfReportService pdfService)
+        {
+            var scan = await _context.Scans
+                .Include(s => s.Result)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (scan == null) return NotFound();
+
+            var patient = await _context.Patients.FirstOrDefaultAsync(p => p.Id == scan.PatientId);
+            if (patient == null) return NotFound();
+
+            User doctor = null;
+            if (patient.DoctorId.HasValue)
+            {
+                doctor = await _context.Users.FirstOrDefaultAsync(u => u.Id == patient.DoctorId.Value);
+            }
+
+            var pdfBytes = pdfService.GeneratePdfReport(patient, scan, doctor);
+
+            var fileName = $"Report_{patient.FullName.Replace(" ", "_")}_{scan.UploadedAt:yyyyMMdd}.pdf";
+            return File(pdfBytes, "application/pdf", fileName);
         }
     }
 }

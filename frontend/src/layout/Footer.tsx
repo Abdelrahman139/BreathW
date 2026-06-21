@@ -33,7 +33,7 @@ export const Footer: React.FC = () => {
               <div className="bg-blue-500/20 p-2 rounded-xl border border-blue-500/30">
                 <Activity className="w-6 h-6 text-blue-400" />
               </div>
-              <span className="text-xl font-bold text-slate-100 tracking-tight">PulmoAI</span>
+              <span className="text-xl font-bold text-slate-100 tracking-tight">BreathWise</span>
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-xs">
               AI-powered chest X-ray analysis platform. Helping doctors and patients detect pulmonary conditions with advanced deep learning technology.
@@ -89,7 +89,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-4">
               <li className="flex items-start space-x-3">
                 <Mail className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />
-                <span className="text-sm text-slate-400">support@pulmoai.com</span>
+                <span className="text-sm text-slate-400">support@BreathWise.com</span>
               </li>
               <li className="flex items-start space-x-3">
                 <Phone className="w-4 h-4 text-blue-400 mt-0.5 shrink-0" />
@@ -109,7 +109,7 @@ export const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className="border-t border-slate-800/60 py-6 flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0">
           <p className="text-xs text-slate-500 flex items-center">
-            © {currentYear} PulmoAI. Made with{' '}
+            © {currentYear} BreathWise. Made with{' '}
             <Heart className="w-3 h-3 text-red-400 mx-1 fill-red-400" /> for better healthcare.
           </p>
           <div className="flex items-center space-x-6">

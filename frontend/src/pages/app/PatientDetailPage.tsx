@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { User as UserIcon, Calendar, Activity, FileImage, Plus, ArrowLeft, Loader2 } from 'lucide-react';
-import axiosInstance from '../../api/axios';
+import axiosInstance, { API_BASE_URL } from '../../api/axios';
 import type { Patient, Scan } from '../../types';
 import { ConditionBadge } from '../../components/ConditionBadge';
 import { useAuth } from '../../hooks/useAuth';
@@ -145,7 +145,7 @@ export const PatientDetailPage: React.FC = () => {
             patientData.scans.map(scan => {
               // Extract top condition for display
               // Assuming scan.result object is mapped correctly, we exclude non-disease keys
-              const diseases = ['pneumonia', 'effusion', 'atelectasis', 'cardiomegaly', 'pneumothorax'];
+              const diseases = ['pneumonia', 'effusion', 'cardiomegaly', 'pneumothorax'];
               let topCondition = 'No Finding';
               let topScore = scan.result.noFinding;
 
@@ -163,7 +163,7 @@ export const PatientDetailPage: React.FC = () => {
                     <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-800 shrink-0 border border-slate-700">
                       {/* Assuming scan has an imageUrl or thumbnail */}
                       {scan.imageUrl ? (
-                        <img src={scan.imageUrl} alt="Scan thumb" className="w-full h-full object-cover opacity-80" />
+                        <img src={scan.imageUrl.startsWith('http') ? scan.imageUrl : `${API_BASE_URL}${scan.imageUrl}`} alt="Scan thumb" className="w-full h-full object-cover opacity-80" />
                       ) : (
                         <FileImage className="w-6 h-6 m-3 text-slate-500" />
                       )}

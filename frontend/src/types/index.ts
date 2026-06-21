@@ -18,7 +18,6 @@ export interface ScanResult {
   scanId: string;
   pneumonia: number;
   effusion: number;
-  atelectasis: number;
   cardiomegaly: number;
   pneumothorax: number;
   noFinding: number;

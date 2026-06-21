@@ -9,7 +9,6 @@ interface ResultCardProps {
 const CONDITIONS = [
   { key: 'pneumonia', label: 'Pneumonia' },
   { key: 'effusion', label: 'Pleural Effusion' },
-  { key: 'atelectasis', label: 'Atelectasis' },
   { key: 'cardiomegaly', label: 'Cardiomegaly' },
   { key: 'pneumothorax', label: 'Pneumothorax' }
 ];

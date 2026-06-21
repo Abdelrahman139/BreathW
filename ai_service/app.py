@@ -23,7 +23,6 @@ import uvicorn
 CONDITIONS = [
     "pneumonia",
     "effusion",
-    "atelectasis",
     "cardiomegaly",
     "pneumothorax"
 ]
@@ -59,7 +58,7 @@ def load_model(weights_path=WEIGHTS_PATH, device="cpu"):
     Load the DenseNet-121 model and initialize with trained weights if available.
     """
     model = torchvision.models.densenet121(pretrained=False)
-    model.classifier = nn.Linear(1024, 5)
+    model.classifier = nn.Linear(1024, 4)
     
     if os.path.exists(weights_path):
         model.load_state_dict(torch.load(weights_path, map_location=device))

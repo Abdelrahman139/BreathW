@@ -28,7 +28,6 @@ namespace XRayAPI.DTOs.Scans
     {
         public double Pneumonia { get; set; }
         public double Effusion { get; set; }
-        public double Atelectasis { get; set; }
         public double Cardiomegaly { get; set; }
         public double Pneumothorax { get; set; }
         public double NoFinding { get; set; }

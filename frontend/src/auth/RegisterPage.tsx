@@ -46,7 +46,7 @@ export const RegisterPage: React.FC = () => {
           Create an Account
         </h2>
         <p className="mt-2 text-center text-sm text-slate-400">
-          Join the PulmoAI Clinical Portal
+          Join the BreathWise Clinical Portal
         </p>
       </div>
 
