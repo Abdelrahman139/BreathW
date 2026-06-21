@@ -24,7 +24,7 @@ namespace XRayAPI.Services
 
         public string HashPassword(string password)
         {
-            return BCrypt.Net.BCrypt.HashPassword(password, workFactor: 12);
+            return BCrypt.Net.BCrypt.HashPassword(password, workFactor: 10);
         }
 
         public bool VerifyPassword(string password, string hash)

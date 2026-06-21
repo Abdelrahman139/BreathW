@@ -23,46 +23,110 @@ namespace XRayAPI.Controllers
         [HttpGet("stats")]
         public async Task<IActionResult> GetStats()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var role = User.FindFirst(ClaimTypes.Role)?.Value;
 
-
+            if (string.IsNullOrEmpty(userIdStr) || !System.Guid.TryParse(userIdStr, out var userId)) return Unauthorized();
 
             int totalPatients = 0;
             int totalScans = 0;
+            int highRisk = 0;
+            int scansThisWeek = 0;
+
+            var query = _context.Scans.Include(s => s.Result).AsQueryable();
 
             if (role == "Patient")
             {
-                totalScans = await _context.Scans.CountAsync(s => s.PatientId.ToString() == userId);
+                query = query.Where(s => s.Patient.UserId == userId);
+                totalScans = await query.CountAsync();
             }
             else
             {
-                totalPatients = await _context.Patients.CountAsync(p => p.DoctorId.ToString() == userId);
-                totalScans = await _context.Scans.CountAsync(s => s.Patient.DoctorId.ToString() == userId);
+                totalPatients = await _context.Patients.CountAsync(p => p.DoctorId == userId);
+                query = query.Where(s => s.Patient.DoctorId == userId);
+                totalScans = await query.CountAsync();
             }
 
-            // Mocked stats for simplicity matching frontend DashboardStats interface
+            var sevenDaysAgo = System.DateTime.UtcNow.AddDays(-7);
+            
+            // Bring into memory to compute advanced stats easily
+            var scans = await query.ToListAsync();
+
+            scansThisWeek = scans.Count(s => s.UploadedAt >= sevenDaysAgo);
+
+            highRisk = scans.Count(s => s.Result != null && 
+                (s.Result.Pneumonia > 0.7 || s.Result.Effusion > 0.7 || s.Result.Cardiomegaly > 0.7 || s.Result.Pneumothorax > 0.7));
+
+            // Condition Counts - Only count the absolute highest disease per scan
+            int countPneumonia = 0;
+            int countEffusion = 0;
+            int countCardiomegaly = 0;
+            int countPneumothorax = 0;
+
+            foreach (var s in scans)
+            {
+                if (s.Result == null) continue;
+                
+                var r = s.Result;
+                var conditions = new System.Collections.Generic.Dictionary<string, double>
+                {
+                    { "Pneumonia", r.Pneumonia },
+                    { "Effusion", r.Effusion },
+                    { "Cardiomegaly", r.Cardiomegaly },
+                    { "Pneumothorax", r.Pneumothorax },
+                    { "No Finding", r.NoFinding }
+                };
+
+                var top = conditions.OrderByDescending(kv => kv.Value).First();
+
+                if (top.Key == "Pneumonia") countPneumonia++;
+                else if (top.Key == "Effusion") countEffusion++;
+                else if (top.Key == "Cardiomegaly") countCardiomegaly++;
+                else if (top.Key == "Pneumothorax") countPneumothorax++;
+            }
+
+            var conditionCounts = new[] {
+                new { name = "Pneumonia", count = countPneumonia },
+                new { name = "Effusion", count = countEffusion },
+                new { name = "Cardiomegaly", count = countCardiomegaly },
+                new { name = "Pneumothorax", count = countPneumothorax }
+            };
+
+            // Scans Timeline (last 7 days)
+            var scansTimeline = new System.Collections.Generic.List<object>();
+            for (int i = 6; i >= 0; i--)
+            {
+                var date = System.DateTime.UtcNow.AddDays(-i).Date;
+                var count = scans.Count(s => s.UploadedAt.Date == date);
+                scansTimeline.Add(new { name = date.ToString("MMM dd"), count = count });
+            }
+
+            // Patient Status (Healthy vs At Risk)
+            int healthy = scans.Count(s => s.Result != null && s.Result.NoFinding > 0.5);
+            int atRisk = scans.Count(s => s.Result != null && s.Result.NoFinding <= 0.5);
+            var patientStatus = new[] {
+                new { name = "Healthy", value = healthy },
+                new { name = "At Risk", value = atRisk }
+            };
+
             return Ok(new {
                 totalPatients,
                 totalScans,
-                highRisk = 2,
-                scansThisWeek = 5,
-                conditionCounts = new[] {
-                    new { name = "Pneumonia", count = 1 },
-                    new { name = "Effusion", count = 0 },
-                    new { name = "Cardiomegaly", count = 0 },
-                    new { name = "Pneumothorax", count = 0 }
-                }
+                highRisk,
+                scansThisWeek,
+                conditionCounts,
+                scansTimeline,
+                patientStatus
             });
         }
 
         [HttpGet("recent-scans")]
         public async Task<IActionResult> GetRecentScans()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var role = User.FindFirst(ClaimTypes.Role)?.Value;
 
-            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            if (string.IsNullOrEmpty(userIdStr) || !System.Guid.TryParse(userIdStr, out var userId)) return Unauthorized();
 
             var query = _context.Scans
                 .Include(s => s.Patient)
@@ -71,11 +135,11 @@ namespace XRayAPI.Controllers
 
             if (role == "Patient")
             {
-                query = query.Where(s => s.Patient.UserId.ToString() == userId);
+                query = query.Where(s => s.Patient.UserId == userId);
             }
             else
             {
-                query = query.Where(s => s.Patient.DoctorId.ToString() == userId);
+                query = query.Where(s => s.Patient.DoctorId == userId);
             }
 
             var recentScansRaw = await query

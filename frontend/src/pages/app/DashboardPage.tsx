@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Users, FileImage, AlertTriangle, Calendar, Loader2 } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, AreaChart, Area, PieChart, Pie, Legend, LabelList } from 'recharts';
 import { Link } from 'react-router-dom';
 import axiosInstance from '../../api/axios';
 import { ConditionBadge } from '../../components/ConditionBadge';
@@ -12,6 +12,8 @@ interface DashboardStats {
   highRisk: number;
   scansThisWeek: number;
   conditionCounts: { name: string; count: number }[];
+  scansTimeline: { name: string; count: number }[];
+  patientStatus: { name: string; value: number }[];
 }
 
 interface RecentScan {
@@ -89,7 +91,9 @@ export const DashboardPage: React.FC = () => {
       { name: 'Effusion', count: 0 },
       { name: 'Cardiomegaly', count: 0 },
       { name: 'Pneumothorax', count: 0 },
-    ]
+    ],
+    scansTimeline: [],
+    patientStatus: []
   };
 
   const statCards = [
@@ -117,7 +121,7 @@ export const DashboardPage: React.FC = () => {
             Get instant AI analysis for your chest X-Ray. Simply upload your image and our system will generate a detailed diagnostic report.
           </p>
           <Link
-            to={`/patients/${user?.id || 'new'}/new-scan`}
+            to={user?.role === 'Doctor' ? '/doctor/upload' : `/patients/${user?.id || 'new'}/new-scan`}
             className="inline-flex items-center px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-xl shadow-blue-600/20 hover:shadow-blue-500/30 hover:-translate-y-0.5"
           >
             Start New Scan Analysis
@@ -144,31 +148,88 @@ export const DashboardPage: React.FC = () => {
 
       {/* Charts & Recent Scans */}
       <div className={`grid grid-cols-1 gap-8 ${user?.role !== 'Patient' ? 'lg:grid-cols-3' : ''}`}>
-        {/* Detection Distribution (Doctors Only) */}
+        {/* Doctor Charts Section */}
         {user?.role !== 'Patient' && (
-          <div className="lg:col-span-2 glass-panel p-6 rounded-2xl">
-            <h2 className="text-lg font-semibold text-slate-100 mb-6">Detection Distribution</h2>
-            <div className="h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={safeStats.conditionCounts} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
-                  <XAxis dataKey="name" stroke="#64748b" tick={{ fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                  <YAxis stroke="#64748b" tick={{ fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                  <Tooltip 
-                    cursor={{ fill: '#1e293b' }} 
-                    contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px', color: '#f8fafc' }} 
-                  />
-                  <Bar dataKey="count" radius={[4, 4, 0, 0]}>
-                    {safeStats.conditionCounts.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'][index % 5]} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+          <div className="lg:col-span-2 space-y-8">
+            
+            {/* Top row of charts */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Detection Distribution */}
+              <div className="glass-panel p-6 rounded-2xl flex flex-col">
+                <h2 className="text-lg font-semibold text-slate-100 mb-6">Detection Distribution</h2>
+                <div className="h-[250px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={safeStats.conditionCounts} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                      <XAxis dataKey="name" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
+                      <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
+                      <Tooltip 
+                        cursor={{ fill: '#1e293b' }} 
+                        contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px', color: '#f8fafc' }} 
+                      />
+                      <Bar dataKey="count" radius={[6, 6, 0, 0]} barSize={40}>
+                        {safeStats.conditionCounts.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'][index % 5]} />
+                        ))}
+                        <LabelList dataKey="count" position="top" fill="#94a3b8" fontSize={14} fontWeight="bold" />
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* Patient Status (Pie Chart) */}
+              <div className="glass-panel p-6 rounded-2xl flex flex-col">
+                <h2 className="text-lg font-semibold text-slate-100 mb-6">Healthy vs At Risk</h2>
+                <div className="h-[250px] w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={safeStats.patientStatus}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {safeStats.patientStatus.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={index === 0 ? '#10b981' : '#ef4444'} />
+                        ))}
+                      </Pie>
+                      <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px', color: '#f8fafc' }} />
+                      <Legend verticalAlign="bottom" height={36} wrapperStyle={{ color: '#94a3b8' }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
             </div>
+
+            {/* Scans Timeline */}
+            <div className="glass-panel p-6 rounded-2xl">
+              <h2 className="text-lg font-semibold text-slate-100 mb-6">Scans Over Time (Last 7 Days)</h2>
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={safeStats.scansTimeline} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                    <XAxis dataKey="name" stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
+                    <YAxis stroke="#64748b" tick={{ fill: '#94a3b8', fontSize: 12 }} axisLine={false} tickLine={false} />
+                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '8px', color: '#f8fafc' }} />
+                    <Area type="monotone" dataKey="count" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorCount)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
           </div>
         )}
-
+        
         {/* Recent Scans */}
         <div className="glass-panel p-6 rounded-2xl flex flex-col">
           <h2 className="text-lg font-semibold text-slate-100 mb-6 flex justify-between items-center">

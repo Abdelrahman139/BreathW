@@ -12,6 +12,7 @@ import { DashboardPage } from './pages/app/DashboardPage';
 import { PatientsPage } from './pages/app/PatientsPage';
 import { PatientDetailPage } from './pages/app/PatientDetailPage';
 import { NewScanPage } from './pages/app/NewScanPage';
+import { DoctorUploadPage } from './pages/app/DoctorUploadPage';
 import { ScanResultPage } from './pages/app/ScanResultPage';
 
 import { HomePage } from './pages/public/HomePage';
@@ -71,6 +72,7 @@ function App() {
             <Route path="/patients" element={<PatientsPage />} />
             <Route path="/patients/:id" element={<PatientDetailPage />} />
             <Route path="/patients/:id/new-scan" element={<NewScanPage />} />
+            <Route path="/doctor/upload" element={<DoctorUploadPage />} />
             <Route path="/scans/:id" element={<ScanResultPage />} />
           </Route>
 
