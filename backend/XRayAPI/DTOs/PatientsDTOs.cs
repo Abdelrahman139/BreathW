@@ -9,6 +9,7 @@ namespace XRayAPI.DTOs.Patients
         public string FullName { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
         public string Gender { get; set; } = string.Empty;
+        public string Notes { get; set; } = string.Empty;
         public Guid? DoctorId { get; set; }
         public DateTime CreatedAt { get; set; }
     }
@@ -31,5 +32,6 @@ namespace XRayAPI.DTOs.Patients
         public string FullName { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
         public string Gender { get; set; } = string.Empty;
+        public string Notes { get; set; } = string.Empty;
     }
 }

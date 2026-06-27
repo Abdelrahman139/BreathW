@@ -19,6 +19,8 @@ namespace XRayAPI.Models
         [MaxLength(10)]
         public string Gender { get; set; } = "Unknown";
 
+        public string Notes { get; set; } = string.Empty;
+
         // If created by a doctor, linked to doctor
         public Guid? DoctorId { get; set; }
         [ForeignKey("DoctorId")]

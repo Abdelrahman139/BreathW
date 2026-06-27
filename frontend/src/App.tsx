@@ -19,6 +19,7 @@ import { HomePage } from './pages/public/HomePage';
 import { DiseasesPage } from './pages/public/DiseasesPage';
 import { HealthTipsPage } from './pages/public/HealthTipsPage';
 import { AboutPage } from './pages/public/AboutPage';
+import { ModelPerformancePage } from './pages/public/ModelPerformancePage';
 
 import { ProfilePage } from './pages/account/ProfilePage';
 import { SettingsPage } from './pages/account/SettingsPage';
@@ -54,12 +55,12 @@ function App() {
           }}
         />
         <Routes>
-          {/* Public Routes inside PublicLayout (Navbar + Footer) */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<HomePage />} />
             <Route path="/diseases" element={<DiseasesPage />} />
             <Route path="/health-tips" element={<HealthTipsPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/model-performance" element={<ModelPerformancePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
           </Route>

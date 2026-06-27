@@ -30,7 +30,8 @@ CONDITIONS = [
 ]
 
 DEVICE = "cpu"
-WEIGHTS_PATH = "weights/densenet121.pt"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+WEIGHTS_PATH = os.path.join(BASE_DIR, "weights", "densenet121.pt")
 
 # ==========================================
 # 2. IMAGE PREPROCESSING

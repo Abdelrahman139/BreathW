@@ -33,3 +33,11 @@ backend/XRayAPI/app.db
 
 # Scratch files
 convert.py
+
+# Large data files and weights
+*.csv
+*.zip
+ai_service/images/
+ai_service/weights/
+backend/XRayAPI/wwwroot/heatmaps/
+

@@ -59,7 +59,8 @@ namespace XRayAPI.Controllers
             {
                 FullName = request.FullName,
                 DateOfBirth = request.DateOfBirth,
-                Gender = request.Gender
+                Gender = request.Gender,
+                Notes = request.Notes
             };
 
             if (role == "Doctor")
