@@ -15,24 +15,19 @@ import { Brain, Activity, Target, Zap, ShieldCheck } from 'lucide-react';
 
 /* ── Data ── */
 const trainingData = [
-  { epoch: 1, loss: 0.8241, valAuc: 0.6541 },
-  { epoch: 2, loss: 0.6532, valAuc: 0.7231 },
-  { epoch: 3, loss: 0.5214, valAuc: 0.7715 },
-  { epoch: 4, loss: 0.4356, valAuc: 0.8124 },
-  { epoch: 5, loss: 0.3642, valAuc: 0.8412 },
-  { epoch: 6, loss: 0.3015, valAuc: 0.8654 },
-  { epoch: 7, loss: 0.2589, valAuc: 0.8812 },
-  { epoch: 8, loss: 0.2241, valAuc: 0.8935 },
-  { epoch: 9, loss: 0.1985, valAuc: 0.9014 },
-  { epoch: 10, loss: 0.1802, valAuc: 0.9105 },
+  { epoch: 1, trainLoss: 0.4268, valLoss: 0.3677 },
+  { epoch: 2, trainLoss: 0.3590, valLoss: 0.3412 },
+  { epoch: 3, trainLoss: 0.3174, valLoss: 0.3223 },
+  { epoch: 4, trainLoss: 0.2746, valLoss: 0.2848 },
+  { epoch: 5, trainLoss: 0.2361, valLoss: 0.2668 },
 ];
 
 const classMetrics = [
-  { condition: 'Pneumonia', accuracy: 92, precision: 89, recall: 94 },
-  { condition: 'Pleural Effusion', accuracy: 88, precision: 85, recall: 91 },
-  { condition: 'Cardiomegaly', accuracy: 95, precision: 93, recall: 96 },
-  { condition: 'Pneumothorax', accuracy: 90, precision: 88, recall: 92 },
-  { condition: 'No Finding', accuracy: 96, precision: 95, recall: 97 },
+  { condition: 'Pneumonia', accuracy: 85, precision: 82, recall: 79 },
+  { condition: 'Pleural Effusion', accuracy: 87, precision: 84, recall: 81 },
+  { condition: 'Cardiomegaly', accuracy: 89, precision: 88, recall: 83 },
+  { condition: 'Pneumothorax', accuracy: 86, precision: 83, recall: 78 },
+  { condition: 'No Finding', accuracy: 88, precision: 86, recall: 84 },
 ];
 
 const StatCard: React.FC<{ title: string; value: string; icon: React.ReactNode; color: string }> = ({
@@ -78,26 +73,26 @@ export const ModelPerformancePage: React.FC = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <StatCard
-              title="Final Validation AUC"
-              value="0.9105"
+              title="Best Validation Loss"
+              value="0.2668"
               icon={<Target className="w-6 h-6 text-emerald-400" />}
               color="bg-emerald-500/10 border border-emerald-500/20"
             />
             <StatCard
               title="Overall Accuracy"
-              value="92.4%"
+              value="89.67%"
               icon={<ShieldCheck className="w-6 h-6 text-blue-400" />}
               color="bg-blue-500/10 border border-blue-500/20"
             />
             <StatCard
               title="Training Epochs"
-              value="10"
+              value="5"
               icon={<Brain className="w-6 h-6 text-purple-400" />}
               color="bg-purple-500/10 border border-purple-500/20"
             />
             <StatCard
-              title="Inference Time"
-              value="< 0.5s"
+              title="Inference Time (TTA)"
+              value="~2s"
               icon={<Zap className="w-6 h-6 text-amber-400" />}
               color="bg-amber-500/10 border border-amber-500/20"
             />
@@ -113,7 +108,7 @@ export const ModelPerformancePage: React.FC = () => {
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Loss Chart */}
             <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-slate-200 mb-6">Binary Cross-Entropy Loss</h3>
+              <h3 className="text-lg font-semibold text-slate-200 mb-6">Training & Validation Loss</h3>
               <div className="h-80 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={trainingData}>
@@ -127,9 +122,18 @@ export const ModelPerformancePage: React.FC = () => {
                     <Legend />
                     <Line
                       type="monotone"
-                      dataKey="loss"
+                      dataKey="trainLoss"
                       name="Training Loss"
                       stroke="#3b82f6"
+                      strokeWidth={3}
+                      dot={{ r: 4, strokeWidth: 2 }}
+                      activeDot={{ r: 6 }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="valLoss"
+                      name="Validation Loss"
+                      stroke="#f59e0b"
                       strokeWidth={3}
                       dot={{ r: 4, strokeWidth: 2 }}
                       activeDot={{ r: 6 }}
@@ -139,30 +143,23 @@ export const ModelPerformancePage: React.FC = () => {
               </div>
             </div>
 
-            {/* AUC Chart */}
+            {/* Loss Reduction Chart */}
             <div className="bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-slate-200 mb-6">Validation ROC AUC</h3>
+              <h3 className="text-lg font-semibold text-slate-200 mb-6">Loss Reduction Over Epochs</h3>
               <div className="h-80 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={trainingData}>
+                  <BarChart data={trainingData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
                     <XAxis dataKey="epoch" stroke="#94a3b8" />
-                    <YAxis stroke="#94a3b8" domain={['auto', 'auto']} />
+                    <YAxis stroke="#94a3b8" domain={[0, 0.5]} />
                     <Tooltip
                       contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', borderRadius: '0.5rem' }}
                       itemStyle={{ color: '#e2e8f0' }}
                     />
                     <Legend />
-                    <Line
-                      type="monotone"
-                      dataKey="valAuc"
-                      name="Validation AUC"
-                      stroke="#10b981"
-                      strokeWidth={3}
-                      dot={{ r: 4, strokeWidth: 2 }}
-                      activeDot={{ r: 6 }}
-                    />
-                  </LineChart>
+                    <Bar dataKey="trainLoss" name="Train Loss" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="valLoss" name="Val Loss" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                  </BarChart>
                 </ResponsiveContainer>
               </div>
             </div>

@@ -17,8 +17,8 @@ BreathW is a comprehensive, modern web application designed for analyzing chest 
 The application is structured into three main components:
 
 1. **`frontend/`**: The client-side application built with React, Vite, and TailwindCSS.
-2. **`backend/XRayAPI/`**: The core API layer built with C# and ASP.NET Core API, using Entity Framework Core and SQLite for data persistence.
-3. **`ai_service/`**: The machine learning microservice built with Python and Flask, serving the PyTorch model for predictions and heatmap generation.
+2. **`backend/XRayAPI/`**: The core API layer built with C# and ASP.NET Core API, using Entity Framework Core and SQL Server for data persistence.
+3. **`ai_service/`**: The machine learning microservice built with Python and FastAPI, serving the PyTorch model for predictions and heatmap generation.
 
 ---
 
@@ -51,10 +51,10 @@ source venv/bin/activate
 # Install required Python dependencies
 pip install -r requirements.txt
 
-# Run the Flask AI Service
+# Run the FastAPI AI Service
 python app.py
 ```
-*Note: The AI service runs on `http://localhost:5000` by default. It requires the `densenet121.pt` model weights inside the `weights/` directory (included in the repo).*
+*Note: The AI service runs on `http://localhost:8000` by default. It requires the `densenet121.pt` model weights inside the `weights/` directory (included in the repo).*
 
 ### 2. Backend API (.NET Core)
 The backend API handles authentication, patient data, and scan metadata, and communicates with the AI service.
@@ -66,7 +66,7 @@ cd backend/XRayAPI
 # Restore the .NET dependencies
 dotnet restore
 
-# Apply database migrations to create the SQLite database (app.db)
+# Apply database migrations to create the SQL Server database
 dotnet ef database update
 
 # Run the Backend Server
@@ -116,10 +116,10 @@ npm run dev
 - C# .NET 8.0
 - ASP.NET Core Web API
 - Entity Framework Core
-- SQLite
+- Microsoft SQL Server
 
 **AI Service:**
 - Python
 - PyTorch (DenseNet121)
-- Flask
+- FastAPI
 - OpenCV & PIL

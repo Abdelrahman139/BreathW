@@ -105,6 +105,10 @@ namespace XRayAPI.Services
                         DrawConditionBar(col, "Pleural Effusion", scan.Result.Effusion);
                         DrawConditionBar(col, "Cardiomegaly", scan.Result.Cardiomegaly);
                         DrawConditionBar(col, "Pneumothorax", scan.Result.Pneumothorax);
+                        
+                        double maxDiseaseScore = Math.Max(scan.Result.Pneumonia, Math.Max(scan.Result.Effusion, Math.Max(scan.Result.Cardiomegaly, scan.Result.Pneumothorax)));
+                        DrawRiskGauge(col, maxDiseaseScore);
+                        DrawStackedProbabilityChart(col, scan.Result);
                     });
                 }
 
@@ -198,6 +202,55 @@ namespace XRayAPI.Services
             });
         }
 
+        private void DrawRiskGauge(ColumnDescriptor col, double maxScore)
+        {
+            col.Item().PaddingTop(10).PaddingBottom(5).Text("Overall Risk Severity Gauge:").SemiBold().FontSize(10).FontColor(Colors.Blue.Darken3);
+            
+            col.Item().PaddingBottom(10).Row(r => 
+            {
+                r.RelativeItem(30).Height(15).Background(maxScore < 0.3 ? Colors.Green.Medium : Colors.Grey.Lighten3)
+                 .AlignCenter().AlignMiddle().Text("LOW RISK").FontSize(8).FontColor(maxScore < 0.3 ? Colors.White : Colors.Grey.Medium).SemiBold();
+                
+                r.RelativeItem(30).Height(15).Background(maxScore >= 0.3 && maxScore < 0.6 ? Colors.Orange.Medium : Colors.Grey.Lighten3)
+                 .AlignCenter().AlignMiddle().Text("MODERATE RISK").FontSize(8).FontColor(maxScore >= 0.3 && maxScore < 0.6 ? Colors.White : Colors.Grey.Medium).SemiBold();
+                
+                r.RelativeItem(40).Height(15).Background(maxScore >= 0.6 ? Colors.Red.Medium : Colors.Grey.Lighten3)
+                 .AlignCenter().AlignMiddle().Text("HIGH RISK").FontSize(8).FontColor(maxScore >= 0.6 ? Colors.White : Colors.Grey.Medium).SemiBold();
+            });
+        }
+
+        private void DrawStackedProbabilityChart(ColumnDescriptor col, ScanResult result)
+        {
+            col.Item().PaddingTop(5).PaddingBottom(5).Text("Probability Distribution Chart:").SemiBold().FontSize(10).FontColor(Colors.Blue.Darken3);
+            
+            double total = result.NoFinding + result.Pneumonia + result.Effusion + result.Cardiomegaly + result.Pneumothorax;
+            if (total == 0) total = 1;
+
+            float wNF = (float)(result.NoFinding / total);
+            float wPn = (float)(result.Pneumonia / total);
+            float wEf = (float)(result.Effusion / total);
+            float wCa = (float)(result.Cardiomegaly / total);
+            float wPx = (float)(result.Pneumothorax / total);
+
+            col.Item().Height(20).Row(r => 
+            {
+                if (wNF > 0) r.RelativeItem(Math.Max(0.01f, wNF)).Background(Colors.Green.Medium).AlignCenter().AlignMiddle().Text(wNF > 0.1 ? "Norm" : "").FontSize(8).FontColor(Colors.White);
+                if (wPn > 0) r.RelativeItem(Math.Max(0.01f, wPn)).Background(Colors.Red.Medium).AlignCenter().AlignMiddle().Text(wPn > 0.1 ? "Pneu" : "").FontSize(8).FontColor(Colors.White);
+                if (wEf > 0) r.RelativeItem(Math.Max(0.01f, wEf)).Background(Colors.Blue.Medium).AlignCenter().AlignMiddle().Text(wEf > 0.1 ? "Effu" : "").FontSize(8).FontColor(Colors.White);
+                if (wCa > 0) r.RelativeItem(Math.Max(0.01f, wCa)).Background(Colors.Orange.Medium).AlignCenter().AlignMiddle().Text(wCa > 0.1 ? "Card" : "").FontSize(8).FontColor(Colors.White);
+                if (wPx > 0) r.RelativeItem(Math.Max(0.01f, wPx)).Background(Colors.Purple.Medium).AlignCenter().AlignMiddle().Text(wPx > 0.1 ? "Pnx" : "").FontSize(8).FontColor(Colors.White);
+            });
+            
+            col.Item().PaddingTop(5).Row(r => 
+            {
+                r.RelativeItem().Row(lr => { lr.ConstantItem(10).Height(10).Background(Colors.Green.Medium); lr.ConstantItem(5); lr.RelativeItem().Text("Normal").FontSize(8); });
+                r.RelativeItem().Row(lr => { lr.ConstantItem(10).Height(10).Background(Colors.Red.Medium); lr.ConstantItem(5); lr.RelativeItem().Text("Pneumonia").FontSize(8); });
+                r.RelativeItem().Row(lr => { lr.ConstantItem(10).Height(10).Background(Colors.Blue.Medium); lr.ConstantItem(5); lr.RelativeItem().Text("Effusion").FontSize(8); });
+                r.RelativeItem().Row(lr => { lr.ConstantItem(10).Height(10).Background(Colors.Orange.Medium); lr.ConstantItem(5); lr.RelativeItem().Text("Cardio").FontSize(8); });
+                r.RelativeItem().Row(lr => { lr.ConstantItem(10).Height(10).Background(Colors.Purple.Medium); lr.ConstantItem(5); lr.RelativeItem().Text("Pneumothorax").FontSize(8); });
+            });
+        }
+
         private string GenerateImpressionText(ScanResult? result)
         {
             if (result == null) return "No AI analysis data available.";
@@ -241,10 +294,10 @@ namespace XRayAPI.Services
         {
             container.PaddingTop(10).Row(row =>
             {
-                row.RelativeItem().DefaultTextStyle(x => x.FontSize(8).FontColor(Colors.Grey.Medium)).Text(x =>
+                row.RelativeItem().DefaultTextStyle(x => x.FontSize(9).FontColor(Colors.Red.Medium)).Text(x =>
                 {
-                    x.Span("Disclaimer: ").Bold();
-                    x.Span("This report is generated with the assistance of an Artificial Intelligence algorithm. It is intended to assist, not replace, clinical judgment by a qualified healthcare professional.");
+                    x.Span("DISCLAIMER: I AM AN AI AND NOT A DOCTOR. ").Bold();
+                    x.Span("This report is generated by an Artificial Intelligence algorithm and does not constitute medical advice. You should visit a doctor or qualified healthcare professional for a proper diagnosis and treatment.");
                 });
 
                 row.ConstantItem(80).AlignRight().DefaultTextStyle(x => x.FontSize(9).FontColor(Colors.Grey.Medium)).Text(x =>
